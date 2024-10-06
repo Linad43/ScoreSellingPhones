@@ -2,7 +2,8 @@ package org.example
 
 class Phone(
     private val model: Model,
-    var price: Double
+    var price: Double,
+    val defective: Boolean = false
 ) {
     companion object {
         fun randomPrice(): Int {
@@ -11,6 +12,12 @@ class Phone(
     }
 
     override fun toString(): String {
-        return "$model, цена: $price"
+        var result = "$model, цена: $price\n"
+        result += if (defective) {
+            "Необходим ремонт."
+        } else {
+            "Телефон исправен."
+        }
+        return result
     }
 }
