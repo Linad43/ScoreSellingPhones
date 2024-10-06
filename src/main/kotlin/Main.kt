@@ -16,4 +16,7 @@ fun main() {
     for (i in 1..100) {
         score[(0..1).random()].addPhone(phones[(0..19).random()])
     }
+    Score.allPhones.forEach{
+        println("${it.key} (${it.value})")
+    }
 }

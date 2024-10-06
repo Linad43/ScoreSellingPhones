@@ -3,7 +3,7 @@ package org.example
 import kotlin.time.times
 
 class Phone(
-    private val model: Model,
+    val model: Model,
     var price: Int,
     val defective: Boolean = false
 ) {

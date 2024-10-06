@@ -5,7 +5,8 @@ import kotlin.time.times
 class Score(
     private val city: String,
     private val repair: Boolean,
-    private val phones: ArrayList<Phone>
+    private val phones: ArrayList<Phone>,
+    private val procent: Double = 1 + (1..10).random() / 100.0
 ) {
     companion object {
         val allPhones = mutableMapOf<Phone, Int>()
@@ -33,9 +34,14 @@ class Score(
     }
 
     fun addPhone(phone: Phone) {
-        phone.price *= (1 + (1..10).random() / 100)
         phones.add(phone)
-        println("Поступил в продажу телефон $phone, в городе $city")
+        val defect:Double
+        if (phone.defective){
+            defect = 0.7
+        }else{
+            defect = 1.0
+        }
+        println("Поступил в продажу телефон ${phone.model} цена: ${(phone.price * procent * defect).toInt()}, в городе $city")
         if (phone.defective) {
             println("Телефону необходим ремонт")
         }
