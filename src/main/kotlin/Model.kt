@@ -15,7 +15,7 @@ class Model(
         )
         private val LETTER = ('A'..'Z').toList()
         private val NUM = (10..99).toList()
-        private fun randomModal(): Model {
+        fun randomModal(): Model {
             val company = COMPANY.random()
             val name = LETTER.random().toString()+NUM.random().toString()
             return Model(company, name)

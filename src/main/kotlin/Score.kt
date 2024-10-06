@@ -1,5 +1,7 @@
 package org.example
 
+import kotlin.time.times
+
 class Score(
     private val city: String,
     private val repair: Boolean,
@@ -31,9 +33,12 @@ class Score(
     }
 
     fun addPhone(phone: Phone) {
-        phone.price *= (1 + (1..10).random() / 100.0)
+        phone.price *= (1 + (1..10).random() / 100)
         phones.add(phone)
         println("Поступил в продажу телефон $phone, в городе $city")
+        if (phone.defective) {
+            println("Телефону необходим ремонт")
+        }
         addingPhones(phone)
     }
 

@@ -1,23 +1,24 @@
 package org.example
 
+import kotlin.time.times
+
 class Phone(
     private val model: Model,
-    var price: Double,
+    var price: Int,
     val defective: Boolean = false
 ) {
     companion object {
         fun randomPrice(): Int {
-            return (10..100).random() * 1000
+            return ((10..100).random() * 1000)
         }
     }
-
     override fun toString(): String {
-        var result = "$model, цена: $price\n"
-        result += if (defective) {
-            "Необходим ремонт."
-        } else {
-            "Телефон исправен."
-        }
+        var result = "$model, цена: $price"
+//        result += if (defective) {
+//            "Необходим ремонт."
+//        } else {
+//            "Телефон исправен."
+//        }
         return result
     }
 }
