@@ -1,11 +1,23 @@
 package org.example
 
 class Score(
-    private val city: String,
+    val city: String,
     private val repair: Boolean,
-    private val phones: ArrayList<Pair<Phone, Double>>
+    private val phones: ArrayList<Pair<Phone, Double>> = arrayListOf<Pair<Phone, Double>>()
 ) {
     companion object {
+        val citis = arrayListOf(
+            "Москва",
+            "Санкт-Петербург",
+            "Сочи",
+            "Казань",
+            "Владивосток",
+            "Анапа",
+            "Екатеринбург",
+            "Нижний Новгород",
+            "Калининград",
+            "Владимир"
+        )
         val allPhones = mutableMapOf<Phone, Int>()
         val sellPhones = mutableMapOf<Phone, Int>()
         fun addingPhones(phone: Phone) {

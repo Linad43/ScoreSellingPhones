@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="45f06289-0007-49de-ad4e-91c8c0886da0" name="Changes" comment="All testing and reduct procent">
+    <list default="true" id="45f06289-0007-49de-ad4e-91c8c0886da0" name="Changes" comment="All done, still have menu">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Model.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Model.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Phone.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Phone.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Score.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Score.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -99,14 +97,34 @@
       <option name="project" value="LOCAL" />
       <updated>1728244948737</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="All done, still have menu">
+      <option name="closed" value="true" />
+      <created>1728319764412</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1728319764412</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add Score, phone, model" />
     <MESSAGE value="reduct Score, phone, model" />
     <MESSAGE value="Test add Phones" />
     <MESSAGE value="All testing and reduct procent" />
-    <option name="LAST_COMMIT_MESSAGE" value="All testing and reduct procent" />
+    <MESSAGE value="All done, still have menu" />
+    <option name="LAST_COMMIT_MESSAGE" value="All done, still have menu" />
   </component>
 </project>
