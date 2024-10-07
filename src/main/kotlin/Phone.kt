@@ -12,6 +12,9 @@ class Phone(
             return ((10..100).random() * 1000)
         }
     }
+
+//    override fun compareTo(other: Phone) = model.toString().compareTo(model.toString())
+
     override fun toString(): String {
         var result = "$model, цена: $price"
 //        result += if (defective) {

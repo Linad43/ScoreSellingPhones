@@ -19,4 +19,8 @@ fun main() {
     Score.allPhones.forEach{
         println("${it.key} (${it.value})")
     }
+    score.forEach{
+        it.printListPhone()
+    }
+
 }
