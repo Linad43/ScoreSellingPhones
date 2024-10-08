@@ -3,7 +3,7 @@ package org.example
 class Score(
     val city: String,
     private val repair: Boolean,
-    private val phones: ArrayList<Pair<Phone, Double>> = arrayListOf<Pair<Phone, Double>>()
+    val phones: ArrayList<Pair<Phone, Double>> = arrayListOf<Pair<Phone, Double>>()
 ) {
     companion object {
         val citis = arrayListOf(

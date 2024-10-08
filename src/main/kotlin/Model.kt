@@ -1,8 +1,8 @@
 package org.example
 
 class Model(
-    private val company: String,
-    private val name: String
+    val company: String,
+    val name: String
 ){
     companion object {
         private val COMPANY = listOf(

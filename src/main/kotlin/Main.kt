@@ -4,6 +4,7 @@ import kotlin.random.Random
 
 var scores = arrayListOf<Score>()
 val phones = arrayListOf<Phone>()
+
 fun main() {
     //menu
     var choise: Int
@@ -36,14 +37,35 @@ fun main() {
         }
     }
     while (true) {
-        val (scores, phones) = addingPhoneToScore(countScore, countModelPhone, countPhoneInScore)
+        //Pair(scores, phones) = addingPhoneToScore(countScore, countModelPhone, countPhoneInScore)
         //scores.forEach { println(it) }
         //phones.forEach { println(it) }
-        when(mainMenu())
-        {
-            1->{
-                when(menuChoiseScore()){
-                    1->{
+        addingPhoneToScore(countScore, countModelPhone, countPhoneInScore)
+        val choiseMainMenu = mainMenu()
+        when (choiseMainMenu) {
+            1 -> {
+                val choiseScore = menuChoiseScore()
+                when (choiseScore) {
+                    in (1..scores.size) -> {
+                        while (true) {
+                            val choiseMenuScore = menuScore((choiseScore - 1))
+                            when (choiseMenuScore) {
+                                1 -> {
+                                    scores[choiseScore-1].printListPhone()
+                                }
+
+                                2 -> {
+                                    menuBuyPhone(scores[choiseScore-1])
+                                }
+
+                                0 -> {
+                                    break
+                                }
+                            }
+                        }
+                    }
+
+                    0 -> {
 
                     }
                 }
@@ -52,6 +74,79 @@ fun main() {
 
         break
     }
+}
+
+fun menuBuyPhone(score: Score): Int {
+    println("Выберите производителя телефона: ")
+    val companys = arrayListOf<String>()
+    score.phones.groupBy {
+        it.first.model.company
+    }.keys.forEach {
+        companys.add(it)
+        println("${companys.size}.${it}")
+    }
+    println("0.Отмена")
+    var choise = readln().toInt()
+    if (choise == 0) {
+        return -1
+    }
+    val choiseCompany = companys[choise - 1]
+    println("Выберите название телефона ${choiseCompany}:")
+    val models = arrayListOf<String>()
+    val filt = score.phones.filter {
+        it.first.model.company == choiseCompany
+    }
+    println(filt)
+    val gro = filt.groupBy {
+        it.first.model.name
+    }
+    println(gro)
+    val kayse = gro.keys
+    println(kayse)
+    val fo = kayse.forEach {
+        //models.add(it)
+        println("${models.size}.${it}")
+    }
+    score.phones.filter {
+        it.first.model.company == choiseCompany
+    }.groupBy {
+        it.first.model.name
+    }.keys.forEach {
+        models.add(it)
+        println("${models.size}.${it}")
+    }
+    println("0.Отмена")
+    choise = readln().toInt()
+    if (choise == 0) {
+        return -1
+    }
+    val choiseName = models[choise - 1]
+    val model = Model(choiseCompany, choiseName)
+    var i = 1
+    println(model)
+    score.phones.filter {
+        it.first.model.company == model.company && it.first.model.name == model.name
+    }.groupBy() {
+        (it.first.price * it.second).toInt()
+    }.values.forEach{
+        //println(it)
+        if (it.isNotEmpty()){
+            println("$i.${it.first().first.model} цена ${(it.first().first.price*it.first().second).toInt()}")
+            i++
+        }
+    }
+    println("Вы хотите приобрести телефон $model")
+    println("1.Да\n2.Нет")
+    choise = readln().toInt()
+    when (choise) {
+        1 -> {
+            score.phones.filter {
+                it.first.model == model
+            }
+        }
+    }
+
+    return 0
 }
 
 private fun addingPhoneToScore(
@@ -86,10 +181,10 @@ private fun mainMenu(): Int {
 
 private fun menuChoiseScore(): Int {
     println("Выберите магазин")
-    var i = 0
+    var i = 1
     scores.forEach {
-        i++
         println("$i.${it.city}")
+        i++
     }
     println()
     println("0.Выход")
