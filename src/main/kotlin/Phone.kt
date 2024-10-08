@@ -17,11 +17,11 @@ class Phone(
 
     override fun toString(): String {
         var result = "$model, цена: $price"
-//        result += if (defective) {
-//            "Необходим ремонт."
-//        } else {
-//            "Телефон исправен."
-//        }
+        result += if (defective) {
+            " (присутствует деффект)"
+        } else {
+            ""
+        }
         return result
     }
 }

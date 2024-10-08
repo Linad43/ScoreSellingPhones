@@ -4,6 +4,7 @@ import kotlin.random.Random
 
 var scores = arrayListOf<Score>()
 val phones = arrayListOf<Phone>()
+val youPhones = arrayListOf<Phone>()
 
 fun main() {
     //menu
@@ -36,47 +37,108 @@ fun main() {
             }
         }
     }
+    addingPhoneToScore(countScore, countModelPhone, countPhoneInScore)
     while (true) {
-        //Pair(scores, phones) = addingPhoneToScore(countScore, countModelPhone, countPhoneInScore)
-        //scores.forEach { println(it) }
-        //phones.forEach { println(it) }
-        addingPhoneToScore(countScore, countModelPhone, countPhoneInScore)
-        val choiseMainMenu = mainMenu()
+        var choiseMainMenu = -1
+        try {
+            choiseMainMenu = mainMenu()
+        } catch (e: Exception) {
+            println("Ошибка ввода, повторите ввод")
+        }
         when (choiseMainMenu) {
             1 -> {
-                val choiseScore = menuChoiseScore()
-                when (choiseScore) {
-                    in (1..scores.size) -> {
-                        while (true) {
-                            val choiseMenuScore = menuScore((choiseScore - 1))
-                            when (choiseMenuScore) {
-                                1 -> {
-                                    scores[choiseScore-1].printListPhone()
+                while (true) {
+                    var choiseScore = -1
+                    try {
+                        choiseScore = menuChoiseScore()
+                    } catch (e: Exception) {
+                        println("Ошибка ввода, повторите ввод")
+                    }
+                    when (choiseScore) {
+                        in (1..scores.size) -> {
+                            while (true) {
+                                var choiseMenuScore = -1
+                                try {
+                                    choiseMenuScore = menuScore((choiseScore - 1))
+                                } catch (e: Exception) {
+                                    println("Ошибка ввода, повторите ввод")
                                 }
+                                when (choiseMenuScore) {
+                                    1 -> {
+                                        scores[choiseScore - 1].printListPhone()
+                                    }
 
-                                2 -> {
-                                    menuBuyPhone(scores[choiseScore-1])
-                                }
+                                    2 -> {
+                                        menuBuyPhone(scores[choiseScore - 1])
+                                    }
 
-                                0 -> {
-                                    break
+                                    0 -> {
+                                        break
+                                    }
+
+                                    else -> continue
                                 }
                             }
                         }
-                    }
 
-                    0 -> {
-
+                        0 -> break
+                        else -> continue
                     }
                 }
             }
-        }
 
-        break
+            2 -> {
+                Score.allPhones.toSortedMap(compareBy {
+                    it.model.toString()
+                }).forEach {
+                    println("${it.key.model}")
+                }
+            }
+
+            3 -> {
+                findPhone()
+            }
+
+            0 -> break
+            else -> continue
+        }
     }
 }
 
-fun menuBuyPhone(score: Score): Int {
+private fun findPhone(): Boolean {
+    println("Выберите производителя: ")
+    val companys = arrayListOf<String>()
+    var choise = -1
+    Score.allPhones.keys.groupBy {
+        it.model.company
+    }.keys.forEach{
+        companys.add(it)
+        println("${companys.size}.${it}")
+    }
+    println("0.Отмена")
+    choise = readln().toInt()
+    if (choise==0){
+        return false
+    }
+    val choiseCompany = companys[choise-1]
+    val models = arrayListOf<String>()
+    Score.allPhones.keys.groupBy {
+        it.model.name
+    }.keys.forEach{
+        models.add(it)
+        println("${models.size}.$it")
+    }
+    println("0.Отмена")
+    choise = readln().toInt()
+    if (choise==0){
+        return false
+    }
+
+}
+
+
+fun menuBuyPhone(score: Score): Boolean {
+
     println("Выберите производителя телефона: ")
     val companys = arrayListOf<String>()
     score.phones.groupBy {
@@ -86,27 +148,15 @@ fun menuBuyPhone(score: Score): Int {
         println("${companys.size}.${it}")
     }
     println("0.Отмена")
+
     var choise = readln().toInt()
     if (choise == 0) {
-        return -1
+        return false
     }
     val choiseCompany = companys[choise - 1]
+
     println("Выберите название телефона ${choiseCompany}:")
     val models = arrayListOf<String>()
-    val filt = score.phones.filter {
-        it.first.model.company == choiseCompany
-    }
-    println(filt)
-    val gro = filt.groupBy {
-        it.first.model.name
-    }
-    println(gro)
-    val kayse = gro.keys
-    println(kayse)
-    val fo = kayse.forEach {
-        //models.add(it)
-        println("${models.size}.${it}")
-    }
     score.phones.filter {
         it.first.model.company == choiseCompany
     }.groupBy {
@@ -116,37 +166,47 @@ fun menuBuyPhone(score: Score): Int {
         println("${models.size}.${it}")
     }
     println("0.Отмена")
+
     choise = readln().toInt()
     if (choise == 0) {
-        return -1
-    }
-    val choiseName = models[choise - 1]
-    val model = Model(choiseCompany, choiseName)
-    var i = 1
-    println(model)
-    score.phones.filter {
-        it.first.model.company == model.company && it.first.model.name == model.name
-    }.groupBy() {
-        (it.first.price * it.second).toInt()
-    }.values.forEach{
-        //println(it)
-        if (it.isNotEmpty()){
-            println("$i.${it.first().first.model} цена ${(it.first().first.price*it.first().second).toInt()}")
-            i++
-        }
-    }
-    println("Вы хотите приобрести телефон $model")
-    println("1.Да\n2.Нет")
-    choise = readln().toInt()
-    when (choise) {
-        1 -> {
-            score.phones.filter {
-                it.first.model == model
-            }
-        }
+        return false
     }
 
-    return 0
+    val choiseName = models[choise - 1]
+    val model = Model(choiseCompany, choiseName)
+    val prices = arrayListOf<Int>()
+    if (score.phones.filter {
+            it.first.model.company == model.company && it.first.model.name == model.name
+        }.groupBy() {
+            (it.first.price * it.second).toInt()
+        }.keys.count() > 1) {
+        println("По вашим критериям найдено следующие телефоны")
+        score.phones.filter {
+            it.first.model.company == model.company && it.first.model.name == model.name
+        }.groupBy() {
+            (it.first.price * it.second).toInt()
+        }.values.forEach {
+            if (it.isNotEmpty()) {
+                prices.add((it.first().first.price * it.first().second).toInt())
+                println("${prices.size}.${it.first().first.model} цена ${(it.first().first.price * it.first().second).toInt()}")
+            }
+        }
+        println("0.Отмена")
+        choise = readln().toInt()
+        if (choise == 0) {
+            return false
+        }
+    }
+    val choisePrice = prices[choise - 1]
+    println("Вы приобрели телефон $model цена $choisePrice")
+    val phoneInScore = score.phones.first {
+        it.first.model.company == model.company
+                && it.first.model.name == model.name
+                && (it.first.price * it.second).toInt() == choisePrice
+    }
+    score.buyPhone(phoneInScore)
+    addYouPhone(phoneInScore.first)
+    return true
 }
 
 private fun addingPhoneToScore(
@@ -197,4 +257,8 @@ private fun menuScore(choise: Int): Int {
     println("2.Приобрести телефон")
     println("0.Назад")
     return readln().toInt()
+}
+
+private fun addYouPhone(phone: Phone) {
+    youPhones.add(phone)
 }

@@ -42,8 +42,10 @@ class Score(
         }
     }
 
-    fun buyPhone(phone: Phone) {
-        phones.remove(phones[indexFirstOf(phone)])
+    fun buyPhone(pair: Pair<Phone, Double>) {
+        val phone = pair.first
+        val procent = pair.second
+        phones.remove(phones[indexFirstOf(phone, procent)])
         println("Телефон $phone, был куплен в городе $city")
         buyingPhones(phone)
     }
@@ -72,6 +74,15 @@ class Score(
     private fun indexFirstOf(phone: Phone): Int {
         for (i in phones.indices) {
             if (phones[i].first == phone) {
+                return i
+            }
+        }
+        return -1
+    }
+
+    private fun indexFirstOf(phone: Phone, procent: Double): Int {
+        for (i in phones.indices) {
+            if (phones[i].first == phone && phones[i].second == procent) {
                 return i
             }
         }
