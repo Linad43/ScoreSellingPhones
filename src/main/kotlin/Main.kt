@@ -1,7 +1,5 @@
 package org.example
 
-import kotlin.random.Random
-
 var scores = arrayListOf<Score>()
 val phones = arrayListOf<Phone>()
 val youPhones = arrayListOf<Phone>()
@@ -16,15 +14,51 @@ fun main() {
     while (true) {
         println("Желаете ввести данные самостоятельно?")
         println("1.Да\n2.Нет")
-        choise = readln().toInt()
+        try {
+            choise = readln().toInt()
+        } catch (e: Exception) {
+            println("Некорректный ввод")
+            continue
+        }
         when (choise) {
             1 -> {
-                println("Введите кол-во магазинов (не рекомендуется более 2): ")
-                countScore = readln().toInt()
-                println("Введите кол-во моделей телефонов: ")
-                countModelPhone = readln().toInt()
-                println("Введите кол-во телефонов в каждом магазине: ")
-                countPhoneInScore = readln().toInt()
+                while (true) {
+                    println("Введите кол-во магазинов: ")
+                    try {
+                        countScore = readln().toInt()
+                    } catch (e: Exception) {
+                        println("Некорректный ввод")
+                    }
+                    if (countScore < 1 || countScore > 10) {
+                        println("Количество городов не может быть меньше одного и больше десяти")
+                        continue
+                    } else break
+                }
+                while (true) {
+                    println("Введите кол-во моделей телефонов: ")
+                    try {
+                        countModelPhone = readln().toInt()
+                    } catch (e: Exception) {
+                        println("Некорректный ввод")
+                    }
+                    if (countModelPhone < 1) {
+                        println("Количество моделей не может быть меньше одного")
+                        continue
+                    } else break
+                }
+                while (true) {
+                    println("Введите кол-во телефонов суммарно во всех магазинах: ")
+                    try {
+                        countPhoneInScore = readln().toInt()
+                    } catch (e: Exception) {
+                        println("Некорректный ввод")
+                    }
+                    if (countPhoneInScore < 1) {
+                        println("Количество телефонов не может быть меньше одного")
+                        continue
+                    } else break
+                }
+                break
             }
 
             2 -> {
@@ -72,6 +106,40 @@ fun main() {
                                         menuBuyPhone(scores[choiseScore - 1])
                                     }
 
+                                    3 -> {
+                                        if (scores[choiseScore - 1].repair) {
+                                            while (true) {
+                                                if (youPhones.isEmpty()) {
+                                                    println("У вас нет в наличии телефона")
+                                                    break
+                                                } else if (youPhones.filter { it.defective == true }.isEmpty()) {
+                                                    println("Все ваши телефоны исправны")
+                                                    break
+                                                } else {
+                                                    val phones = arrayListOf<Phone>()
+                                                    youPhones.filter { it.defective == true }
+                                                        .forEach {
+                                                            phones.add(it)
+                                                            println("${phones.size}.${it.model}")
+                                                        }
+                                                    println("0.Отмена")
+                                                    var choise: Int
+                                                    try {
+                                                        choise = readln().toInt()
+                                                    } catch (e: Exception) {
+                                                        println("Некорректный ввод")
+                                                        continue
+                                                    }
+                                                    if (choise == 0) {
+                                                        break
+                                                    } else {
+                                                        scores[choiseScore - 1].repairPhone(phones[choise - 1])
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
                                     0 -> {
                                         break
                                     }
@@ -99,6 +167,14 @@ fun main() {
                 findPhone()
             }
 
+            4 -> {
+                if (youPhones.isNotEmpty()) {
+                    youPhones.forEach {
+                        println(it)
+                    }
+                }
+            }
+
             0 -> break
             else -> continue
         }
@@ -106,80 +182,123 @@ fun main() {
 }
 
 private fun findPhone(): Boolean {
-    println("Выберите производителя: ")
-    val companys = arrayListOf<String>()
-    var choise = -1
-    Score.allPhones.keys.groupBy {
-        it.model.company
-    }.keys.forEach{
-        companys.add(it)
-        println("${companys.size}.${it}")
+    var companys = arrayListOf<String>()
+    var choise: Int
+    while (true) {
+        companys.clear()
+        println("Выберите производителя: ")
+        companys = arrayListOf<String>()
+        Score.allPhones.keys.groupBy {
+            it.model.company
+        }.keys.forEach {
+            companys.add(it)
+            println("${companys.size}.${it}")
+        }
+        println("0.Отмена")
+        try {
+            choise = readln().toInt()
+        } catch (e: Exception) {
+            println("Некорректный ввод")
+            continue
+        }
+        if (choise == 0) {
+            return false
+        } else break
     }
-    println("0.Отмена")
-    choise = readln().toInt()
-    if (choise==0){
-        return false
-    }
-    val choiseCompany = companys[choise-1]
+    val choiseCompany = companys[choise - 1]
     val models = arrayListOf<String>()
-    Score.allPhones.keys.groupBy {
-        it.model.name
-    }.keys.forEach{
-        models.add(it)
-        println("${models.size}.$it")
+    while (true) {
+        models.clear()
+        Score.allPhones.keys.filter {
+            it.model.company == choiseCompany
+        }.groupBy {
+            it.model.name
+        }.keys.forEach {
+            models.add(it)
+            println("${models.size}.$it")
+        }
+        println("0.Отмена")
+        try {
+            choise = readln().toInt()
+        } catch (e: Exception) {
+            println("Некорректный ввод")
+            continue
+        }
+        if (choise == 0) {
+            return false
+        } else break
     }
-    println("0.Отмена")
-    choise = readln().toInt()
-    if (choise==0){
-        return false
+    val choiseModel = models[choise - 1]
+    println("Найдено в следующих городах:")
+    scores.forEach {
+        if (it.indexFirstOf(Model(choiseCompany, choiseModel)) > 0) {
+            println(it.city)
+        }
     }
-
+    return true
 }
 
 
 fun menuBuyPhone(score: Score): Boolean {
-
-    println("Выберите производителя телефона: ")
     val companys = arrayListOf<String>()
-    score.phones.groupBy {
-        it.first.model.company
-    }.keys.forEach {
-        companys.add(it)
-        println("${companys.size}.${it}")
-    }
-    println("0.Отмена")
+    var choise: Int
+    while (true) {
+        companys.clear()
+        println("Выберите производителя телефона: ")
+        score.phones.groupBy {
+            it.first.model.company
+        }.keys.forEach {
+            companys.add(it)
+            println("${companys.size}.${it}")
+        }
+        println("0.Отмена")
 
-    var choise = readln().toInt()
-    if (choise == 0) {
-        return false
+        try {
+            choise = readln().toInt()
+        } catch (e: Exception) {
+            println("Некорректный ввод")
+            continue
+        }
+
+        if (choise == 0) {
+            return false
+        } else {
+            break
+        }
     }
     val choiseCompany = companys[choise - 1]
-
-    println("Выберите название телефона ${choiseCompany}:")
     val models = arrayListOf<String>()
-    score.phones.filter {
-        it.first.model.company == choiseCompany
-    }.groupBy {
-        it.first.model.name
-    }.keys.forEach {
-        models.add(it)
-        println("${models.size}.${it}")
-    }
-    println("0.Отмена")
+    while (true) {
+        models.clear()
+        println("Выберите название телефона ${choiseCompany}:")
+        score.phones.filter {
+            it.first.model.company == choiseCompany
+        }.groupBy {
+            it.first.model.name
+        }.keys.forEach {
+            models.add(it)
+            println("${models.size}.${it}")
+        }
+        println("0.Отмена")
 
-    choise = readln().toInt()
-    if (choise == 0) {
-        return false
-    }
+        try {
+            choise = readln().toInt()
+        } catch (e: Exception) {
+            println("Некорректный ввод")
+            continue
+        }
 
+        if (choise == 0) {
+            return false
+        } else {
+            break
+        }
+    }
     val choiseName = models[choise - 1]
     val model = Model(choiseCompany, choiseName)
     val prices = arrayListOf<Int>()
-    if (score.phones.filter {
-            it.first.model.company == model.company && it.first.model.name == model.name
-        }.groupBy() {
-            (it.first.price * it.second).toInt()
-        }.keys.count() > 1) {
+    while (true) {
+        prices.clear()
         println("По вашим критериям найдено следующие телефоны")
         score.phones.filter {
             it.first.model.company == model.company && it.first.model.name == model.name
@@ -192,11 +311,17 @@ fun menuBuyPhone(score: Score): Boolean {
             }
         }
         println("0.Отмена")
-        choise = readln().toInt()
+        try {
+            choise = readln().toInt()
+        } catch (e: Exception) {
+            println("Некорректный ввод")
+            continue
+        }
         if (choise == 0) {
             return false
-        }
+        } else break
     }
+
     val choisePrice = prices[choise - 1]
     println("Вы приобрели телефон $model цена $choisePrice")
     val phoneInScore = score.phones.first {
@@ -215,7 +340,10 @@ private fun addingPhoneToScore(
     countPhoneInScore: Int
 ): Pair<ArrayList<Score>, ArrayList<Phone>> {
     for (i in 0..<countScore) {
-        scores.add(Score(Score.citis[i], Random.nextBoolean()))
+        if (i % 2 == 0) {
+            scores.add(Score(Score.citis[i], false))
+        } else
+            scores.add(Score(Score.citis[i], true))
     }
     for (i in 0..<countModelPhone) {
         if ((1..5).random() == 1) {
@@ -235,6 +363,9 @@ private fun mainMenu(): Int {
     println("1.Выбор магазина")
     println("2.Посмотреть все телефоны")
     println("3.Поиск телефона")
+    if (youPhones.isNotEmpty()) {
+        println("4.Посмотреть свои телефоны")
+    }
     println("0.Выход")
     return readln().toInt()
 }
@@ -255,6 +386,9 @@ private fun menuScore(choise: Int): Int {
     println("Меню магазина в городе ${scores[choise].city}")
     println("1.Показать ассортимент магазина")
     println("2.Приобрести телефон")
+    if (scores[choise].repair) {
+        println("3.Ремонт приобретенного телефона")
+    }
     println("0.Назад")
     return readln().toInt()
 }

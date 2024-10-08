@@ -5,8 +5,9 @@ import kotlin.time.times
 class Phone(
     val model: Model,
     var price: Int,
-    val defective: Boolean = false
+    var defective: Boolean = false
 ) {
+
     companion object {
         fun randomPrice(): Int {
             return ((10..100).random() * 1000)

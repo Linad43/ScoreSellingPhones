@@ -2,7 +2,7 @@ package org.example
 
 class Score(
     val city: String,
-    private val repair: Boolean,
+    val repair: Boolean,
     val phones: ArrayList<Pair<Phone, Double>> = arrayListOf<Pair<Phone, Double>>()
 ) {
     companion object {
@@ -71,7 +71,18 @@ class Score(
         addingPhones(phone)
     }
 
-    private fun indexFirstOf(phone: Phone): Int {
+    fun indexFirstOf(model: Model): Int {
+        Score.allPhones.forEach {
+            if (it.key.model.company == model.company
+                && it.key.model.name == model.name
+            ){
+                return indexFirstOf(it.key)
+            }
+        }
+        return -1
+    }
+
+    fun indexFirstOf(phone: Phone): Int {
         for (i in phones.indices) {
             if (phones[i].first == phone) {
                 return i
@@ -124,6 +135,7 @@ class Score(
             println("Телефон отправлен на ремонт.")
             if (phone.defective) {
                 println("Телефон отремонтирован.")
+                phone.defective = false
             } else {
                 println("Ремонт не требуется.")
             }
